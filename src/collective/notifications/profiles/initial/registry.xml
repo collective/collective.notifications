@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<registry>
+ <record name="collective.notifications">
+  <field type="plone.registry.field.Dict">
+   <title>Notifications</title>
+ </field>
+ </record>
+</registry>
