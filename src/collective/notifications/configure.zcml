@@ -2,11 +2,18 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:five="http://namespaces.zope.org/five"
     xmlns:i18n="http://namespaces.zope.org/i18n"
+    xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
     i18n_domain="collective.notifications">
 
   <five:registerPackage package="." initialize=".initialize" />
   <includeDependencies package="." />
+
+  <browser:resourceDirectory
+      name="collective.notifications"
+      directory="static"
+      permission="zope.Public"
+      />
 
   <genericsetup:registerProfile
       name="initial"
@@ -29,5 +36,14 @@
       provides=".utility.INotifications"
       factory=".utility.Notifications" />
 
+
+  <include package="Products.CMFCore" file="permissions.zcml" />
+
+  <browser:page
+      name="notifications-settings"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      class=".controlpanel.NotificationsSettingsControlPanel"
+      permission="cmf.ManagePortal"
+      />
 
 </configure>

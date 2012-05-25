@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<registry>
+ <record name="collective.notifications.controlpanel.INotificationsSettings.notification_types">
+  <value>
+   <element>mention</element>
+  </value>
+ </record>
+</registry>

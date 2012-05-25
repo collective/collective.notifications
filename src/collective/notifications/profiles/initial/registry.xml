@@ -5,4 +5,5 @@
    <title>Notifications</title>
  </field>
  </record>
+ <records interface="collective.notifications.controlpanel.INotificationsSettings" />
 </registry>
