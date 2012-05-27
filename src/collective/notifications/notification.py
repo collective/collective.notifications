@@ -6,6 +6,7 @@ from zope.interface import implements
 from zope.intid.interfaces import IIntIds
 from zope.keyreference.interfaces import IKeyReference
 
+
 class INotification(IKeyReference):
     """
     """
@@ -13,6 +14,8 @@ class INotification(IKeyReference):
 class Notification(Persistent):
 
     implements(INotification)
+
+    key_type_id = 'collective.notifications.notification'
 
     member = None
     userid = u''
