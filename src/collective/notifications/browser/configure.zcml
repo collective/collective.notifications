@@ -1,0 +1,28 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="collective.notifications">
+
+  <browser:page
+     for="*"
+     name="all_notifications"
+     attribute="all_notifications"
+     class=".notifications_view.NotificationsView"
+     permission="zope2.View"
+     />
+
+  <browser:page
+     for="*"
+     name="section_notifications"
+     attribute="section_notifications"
+     class=".notifications_view.NotificationsView"
+     permission="zope2.View"
+     />
+
+  <adapter
+    factory=".mention_notification.MentionNotification"
+    provides=".mention_notification.IMentionNotification"
+    name="mention"
+    />
+
+</configure>

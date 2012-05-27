@@ -1,0 +1,20 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="collective.notifications">
+
+<body>
+    <metal:main fill-slot="main">
+        <metal:main_macro define-macro="main">
+        <h1 i18n:translate="">Your notifications</h1>
+
+        <tal:notifications tal:repeat="notification view/notifications">
+            <div tal:replace="structure python:view.render_notification(notification)" />
+        </tal:notifications>
+        </metal:main_macro>
+    </metal:main>
+</body>
+</html>

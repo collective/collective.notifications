@@ -9,6 +9,8 @@
   <five:registerPackage package="." initialize=".initialize" />
   <includeDependencies package="." />
 
+  <include package=".browser" />
+
   <browser:resourceDirectory
       name="collective.notifications"
       directory="static"
@@ -17,7 +19,7 @@
 
   <genericsetup:registerProfile
       name="initial"
-      title="collective.notifications"
+      title="collective.notifications (Initial)"
       directory="profiles/initial"
       description="Installs the initial bits for the collective.notifications package"
       provides="Products.GenericSetup.interfaces.EXTENSION"

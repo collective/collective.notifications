@@ -5,10 +5,13 @@ from zope.interface import implements
 from zope.intid.interfaces import IIntIds
 from zope.keyreference.interfaces import IKeyReference
 
+class INotification(IKeyReference):
+    """
+    """
 
 class Notification(object):
 
-    implements(IKeyReference)
+    implements(INotification)
 
     member = None
     userid = u''

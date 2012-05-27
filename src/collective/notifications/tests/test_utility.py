@@ -224,6 +224,9 @@ class UtilityTest(unittest.TestCase):
         self.assertEqual(unread_count[1], ("section 2", 0))
         self.assertEqual(unread_count[2], ("section 3", 6))
 
+    def test_get_empty_notifications_for_member(self):
+        pass
+
 
 def test_suite():
     return unittest.defaultTestLoader.loadTestsFromName(__name__)

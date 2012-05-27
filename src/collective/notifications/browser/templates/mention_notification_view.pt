@@ -1,0 +1,28 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      i18n:domain="collective.notifications"
+      tal:omit-tag="">
+<body tal:omit-tag="">
+
+    <div class="mention-notification">
+        <span class="mention-message"
+              i18n:translate="">You have been mentioned by
+            <a href="#"
+               class="mention-user"
+               tal:attributes="href view/mentioner_home"
+               tal:content="view/mentioner"
+               i18n:name="mentioner">Full name</a>
+               in
+            <a href="#"
+               class="mention-location"
+               tal:attributes="href view/location/absolute_url"
+               tal:content="view/location/pretty_title_or_id"
+               i18n:name="location">Location</a>
+               .</span>
+    </div>
+
+</body>
+</html>

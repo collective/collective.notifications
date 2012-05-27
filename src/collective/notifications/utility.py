@@ -103,7 +103,10 @@ class Notifications(object):
     def get_notifications_for_member(self, member, section=None):
 
         registry = getUtility(IRegistry)
-        notifications = registry.get(PROJECTNAME, None)
+        notifications = registry.get(PROJECTNAME, {})
+
+        if not notifications:
+            notifications = {}
 
         userid = member.getMemberId()
 
