@@ -113,7 +113,7 @@ class Notifications(object):
         member_notifications = notifications.get(userid, {})
 
         if section:
-            notifications = member_notifications[section]
+            notifications = member_notifications.get(section, [])
         else:
             notifications = []
             for i in member_notifications.keys():
