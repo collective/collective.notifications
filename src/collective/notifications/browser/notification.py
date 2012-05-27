@@ -5,6 +5,8 @@ from zope.component import adapts
 
 from collective.notifications.notification import INotification
 
+import transaction
+
 
 class IBaseNotification(Interface):
     """
@@ -31,4 +33,6 @@ class BaseNotification(object):
         raise ("This method should be overriden")
 
     def mark_notification_as_read(self):
-        self.notification.mark_read()
+        if not self.notification.is_read():
+            self.notification.mark_read()
+            transaction.savepoint()

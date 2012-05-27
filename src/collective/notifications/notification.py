@@ -1,3 +1,4 @@
+from Persistence import Persistent
 
 from zope.component import getUtility
 from zope.interface import implements
@@ -9,7 +10,7 @@ class INotification(IKeyReference):
     """
     """
 
-class Notification(object):
+class Notification(Persistent):
 
     implements(INotification)
 
