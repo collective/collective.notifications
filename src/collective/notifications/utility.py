@@ -126,6 +126,9 @@ class Notifications(object):
         registry = getUtility(IRegistry)
         notifications = registry.get(PROJECTNAME, None)
 
+        if not notifications:
+            notifications = {}
+
         userid = member.getMemberId()
 
         member_notifications = notifications.get(userid, {})
