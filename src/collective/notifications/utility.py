@@ -1,6 +1,10 @@
+from Products.CMFCore.utils import getToolByName
+
 from zope.interface import implements
 from zope.interface import Interface
 from zope.component import getUtility
+
+from zope.site.hooks import getSite
 
 from zope.intid.interfaces import IIntIds
 
@@ -17,10 +21,16 @@ class INotifications(Interface):
         This method will add a notification to the notifications registry
         """
 
-    def notify_member(self, member, type, message, params, section=None):
+    def notify_member(member, type, message, params, section=None):
         """
         This method will notify a given member, a notification with the
         given message, type and params, into the given section
+        """
+
+    def notify_broadcast(type, message, params, section=None):
+        """
+        This method will send a notification for all members in the site using
+        the 'notify_member' method
         """
 
     def get_notifications_for_member(member, section=None):
@@ -99,6 +109,15 @@ class Notifications(object):
             notification['section'] = 'global'
 
         self.notify(notification)
+
+    def notify_broadcast(self, type, message, params, section=None):
+        portal = getSite()
+
+        pm = getToolByName(portal, 'portal_membership')
+        members = pm.listMembers()
+
+        for member in members:
+            self.notify_member(member, type, message, params, section)
 
     def get_notifications_for_member(self, member, section=None):
 
