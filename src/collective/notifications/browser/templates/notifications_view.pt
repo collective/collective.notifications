@@ -12,6 +12,7 @@
         <h1 i18n:translate="">Your notifications</h1>
 
         <tal:notifications tal:repeat="notification view/notifications">
+            <p tal:content="notification/is_read" />
             <div tal:replace="structure python:view.render_notification(notification)" />
         </tal:notifications>
         </metal:main_macro>
