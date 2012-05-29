@@ -45,6 +45,27 @@ class NotificationsView(BrowserView):
         self.notifications = self.get_notifications(section = self.context.id)
         return self.pt()
 
+    def json_section_notifications(self, only_unread=None):
+        only_unread = True if only_unread else None
+        notifications = self.get_notifications(section = self.context.id)
+        json_notifications = [{
+            'read': x.is_read(),
+            'userid': x.userid,
+            'section': x.section,
+            'message': x.message,
+            'params': x.params,
+            'id': x.intid
+         } for x in notifications if x.is_read() != only_unread]
+
+        return json.dumps(json_notifications)
+
+    def read_all_section_notifications(self):
+        notifications = self.get_notifications(section = self.context.id)
+        for notification in notifications:
+            if not notification.is_read():
+                notification.mark_read()
+        return
+
     def render_notification(self, notification):
         notification_type = notification.notification_type
         view = queryMultiAdapter((self.context, self.request, notification),

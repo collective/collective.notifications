@@ -19,6 +19,22 @@
      permission="zope2.View"
      />
 
+  <browser:page
+     for="*"
+     name="json_section_notifications"
+     attribute="json_section_notifications"
+     class=".notifications_view.NotificationsView"
+     permission="zope2.View"
+     />
+
+  <browser:page
+     for="*"
+     name="read_all_section_notifications"
+     attribute="read_all_section_notifications"
+     class=".notifications_view.NotificationsView"
+     permission="zope2.View"
+     />
+
   <adapter
     factory=".mention_notification.MentionNotification"
     provides=".mention_notification.IMentionNotification"
