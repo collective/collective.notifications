@@ -30,7 +30,7 @@ class Notification(Persistent):
         self.member = member
         self.userid = member.getMemberId()
         self.notification_type = notification_type
-        self.message = u''
+        self.message = message
         self.params = params
         self.section = section
         self.read = False
