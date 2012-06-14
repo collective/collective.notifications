@@ -31,7 +31,6 @@ class UtilityTest(unittest.TestCase):
 
         self.pm = getToolByName(self.portal, 'portal_membership')
 
-
     def test_notifying_a_user(self):
         auth_member = self.pm.getAuthenticatedMember()
         type = "type 1"
@@ -223,6 +222,36 @@ class UtilityTest(unittest.TestCase):
         self.assertEqual(unread_count[0], ("section 1", 3))
         self.assertEqual(unread_count[1], ("section 2", 0))
         self.assertEqual(unread_count[2], ("section 3", 6))
+
+    def test_notifying_a_user_using_user_id(self):
+        auth_member = self.pm.getAuthenticatedMember()
+        type = "type 1"
+        message = "This is the message"
+        params = {}
+        section = "section 1"
+
+        member_id = auth_member.getUserId()
+
+        self.utility.notify_member(member_id,
+                                   type,
+                                   message,
+                                   params,
+                                   section)
+
+        registry = getUtility(IRegistry)
+        notifications = registry.get(PROJECTNAME, None)
+
+        user_notifications = notifications.get(auth_member.getMemberId(), {})
+
+        self.assertNotEqual(user_notifications, {})
+
+        section_notifications = user_notifications.get(section, [])
+
+        self.assertNotEqual(section_notifications, [])
+
+        notification = section_notifications[0]
+
+        self.assertTrue(isinstance(notification, Notification))
 
     def test_get_empty_notifications_for_member(self):
         pass

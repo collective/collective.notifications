@@ -62,6 +62,11 @@ class Notifications(object):
 
         # First, let's create our notification object
         member = notification['member']
+        if isinstance(member, basestring):
+            portal = getSite()
+            pm = getToolByName(portal, 'portal_membership')
+            member = pm.getMemberById(member)
+
         notification_type = notification['type']
         message = notification['message']
         params = notification['params']
