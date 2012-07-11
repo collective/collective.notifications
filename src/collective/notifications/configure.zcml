@@ -35,6 +35,12 @@
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />
 
+  <genericsetup:importStep
+      name="collective.notifications-importVarious"
+      title="Import various for the initial profile for collective.notifications"
+      description="Import various for the initial profile for collective.notifications"
+      handler="collective.notifications.setuphandlers.import_various">
+  </genericsetup:importStep>
 
   <utility
       provides=".utility.INotifications"
