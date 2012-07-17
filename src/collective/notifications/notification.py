@@ -6,6 +6,8 @@ from zope.interface import implements
 from zope.intid.interfaces import IIntIds
 from zope.keyreference.interfaces import IKeyReference
 
+from DateTime import DateTime
+
 
 class INotification(IKeyReference):
     """
@@ -25,8 +27,9 @@ class Notification(Persistent):
     section = u''
     read = False
     intid = 0
+    expires = None
 
-    def __init__(self, member, notification_type, message, params, section):
+    def __init__(self, member, notification_type, message, params, section, expires=None):
         self.member = member
         self.userid = member.getMemberId()
         self.notification_type = notification_type
@@ -36,6 +39,7 @@ class Notification(Persistent):
         self.read = False
         intids = getUtility(IIntIds)
         self.intid = intids.register(self)
+        self.expires = expires
 
     def __call__(self):
         return self
@@ -49,3 +53,10 @@ class Notification(Persistent):
     def mark_unread(self):
         self.read = False
 
+    def is_expired(self):
+        expired = False
+        if self.expires:
+            if self.expires < DateTime():
+                expired = True
+
+        return expired

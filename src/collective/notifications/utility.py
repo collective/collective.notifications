@@ -21,13 +21,13 @@ class INotifications(Interface):
         This method will add a notification to the notifications registry
         """
 
-    def notify_member(member, type, message, params, section=None):
+    def notify_member(member, type, message, params, section=None, expires=None):
         """
         This method will notify a given member, a notification with the
         given message, type and params, into the given section
         """
 
-    def notify_broadcast(type, message, params, section=None):
+    def notify_broadcast(type, message, params, section=None, expires=None):
         """
         This method will send a notification for all members in the site using
         the 'notify_member' method
@@ -71,12 +71,14 @@ class Notifications(object):
         message = notification['message']
         params = notification['params']
         section = notification['section']
+        expires = notification['expires']
 
         new_notification = Notification(member,
                                         notification_type,
                                         message,
                                         params,
-                                        section)
+                                        section,
+                                        expires)
 
         # Now, we are going to get existing notifications for this member and
         # for this section
@@ -100,13 +102,14 @@ class Notifications(object):
         notifications[userid] = member_notifications
         registry[PROJECTNAME] = notifications
 
-    def notify_member(self, member, type, message, params, section=None):
+    def notify_member(self, member, type, message, params, section=None, expires=None):
 
         notification = {}
         notification['member'] = member
         notification['type'] = type
         notification['message'] = message
         notification['params'] = params
+        notification['expires'] = expires
 
         if section:
             notification['section'] = section
@@ -115,14 +118,14 @@ class Notifications(object):
 
         self.notify(notification)
 
-    def notify_broadcast(self, type, message, params, section=None):
+    def notify_broadcast(self, type, message, params, section=None, expires=None):
         portal = getSite()
 
         pm = getToolByName(portal, 'portal_membership')
         members = pm.listMembers()
 
         for member in members:
-            self.notify_member(member, type, message, params, section)
+            self.notify_member(member, type, message, params, section, expires)
 
     def get_notifications_for_member(self, member, section=None):
 
@@ -141,7 +144,8 @@ class Notifications(object):
         else:
             notifications = []
             for i in member_notifications.keys():
-                notifications.extend(member_notifications[i])
+                non_expired = [i for i in member_notifications[i] if not i.is_expired()]
+                notifications.extend(non_expired)
 
         return notifications
 
@@ -167,6 +171,8 @@ class Notifications(object):
                     # notifications, once we found one that is already read.
                     # So we just stop here
                     break
+                if notification.is_expired():
+                    continue
 
                 number += 1
 

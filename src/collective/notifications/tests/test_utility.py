@@ -253,8 +253,62 @@ class UtilityTest(unittest.TestCase):
 
         self.assertTrue(isinstance(notification, Notification))
 
-    def test_get_empty_notifications_for_member(self):
-        pass
+    def test_notifications_expire(self):
+        auth_member = self.pm.getAuthenticatedMember()
+        type = "type 1"
+        expired_message = "Expired"
+        non_expired_message = "Non expired"
+        params = {}
+        section = "section 1"
+        expires = DateTime()
+
+        member_id = auth_member.getUserId()
+
+        self.utility.notify_member(member_id,
+                                   type,
+                                   expired_message,
+                                   params,
+                                   section,
+                                   expires - 5)
+
+        self.utility.notify_member(member_id,
+                                   type,
+                                   non_expired_message,
+                                   params,
+                                   section,
+                                   expires + 5)
+
+        # We can see that both notifications exist
+        registry = getUtility(IRegistry)
+        notifications = registry.get(PROJECTNAME, None)
+
+        user_notifications = notifications.get(auth_member.getMemberId(), {})
+
+        self.assertNotEqual(user_notifications, {})
+
+        section_notifications = user_notifications.get(section, [])
+
+        self.assertNotEqual(section_notifications, [])
+
+        notification = section_notifications[0]
+
+        self.assertTrue(isinstance(notification, Notification))
+        self.assertEquals(notification.message, "Non expired")
+
+        notification = section_notifications[1]
+
+        self.assertTrue(isinstance(notification, Notification))
+        self.assertEquals(notification.message, "Expired")
+
+        # But if we use our utility methods to get the notifications, then expired ones are filtered out
+        notifications = self.utility.get_notifications_for_member(auth_member)
+        self.assertEquals(len(notifications), 1)
+        self.assertTrue(isinstance(notifications[0], Notification))
+        self.assertEquals(notifications[0].message, "Non expired")
+
+        count = self.utility.get_unread_count_for_member(auth_member)
+        self.assertEquals(len(count), 1)
+        self.assertEquals(count, [('section 1', 1)])
 
 
 def test_suite():
