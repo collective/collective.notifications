@@ -78,13 +78,15 @@ class Notifications(object):
         params = notification['params']
         section = notification['section']
         expires = notification['expires']
+        condition = notification['condition']
 
         new_notification = Notification(member,
                                         notification_type,
                                         message,
                                         params,
                                         section,
-                                        expires)
+                                        expires,
+                                        condition)
 
         # Now, we are going to get existing notifications for this member and
         # for this section
@@ -108,7 +110,7 @@ class Notifications(object):
         notifications[userid] = member_notifications
         registry[PROJECTNAME] = notifications
 
-    def notify_member(self, member, type, message, params, section=None, expires=None):
+    def notify_member(self, member, type, message, params, section=None, expires=None, condition=None):
 
         notification = {}
         notification['member'] = member
@@ -116,6 +118,7 @@ class Notifications(object):
         notification['message'] = message
         notification['params'] = params
         notification['expires'] = expires
+        notification['condition'] = condition
 
         if section:
             notification['section'] = section
@@ -124,16 +127,16 @@ class Notifications(object):
 
         self.notify(notification)
 
-    def notify_broadcast(self, type, message, params, section=None, expires=None):
+    def notify_broadcast(self, type, message, params, section=None, expires=None, condition=None):
         portal = getSite()
 
         pm = getToolByName(portal, 'portal_membership')
         members = pm.listMembers()
 
         for member in members:
-            self.notify_member(member, type, message, params, section, expires)
+            self.notify_member(member, type, message, params, section, expires, condition)
 
-    def notify_role(self, roles, type, message, params, section=None, expires=None):
+    def notify_role(self, roles, type, message, params, section=None, expires=None, condition=None):
         portal = getSite()
         pm = getToolByName(portal, 'portal_membership')
 
@@ -146,7 +149,7 @@ class Notifications(object):
                         if member.has_role(role) and member not in members]
 
         for member in members:
-            self.notify_member(member, type, message, params, section, expires)
+            self.notify_member(member, type, message, params, section, expires, condition)
 
     def get_notifications_for_member(self, member, section=None):
 
@@ -165,8 +168,9 @@ class Notifications(object):
         else:
             notifications = []
             for i in member_notifications.keys():
-                non_expired = [i for i in member_notifications[i] if not i.is_expired()]
-                notifications.extend(non_expired)
+                non_expired_and_valid = [i for i in member_notifications[i] 
+                                         if not i.is_expired() and i.is_valid()]
+                notifications.extend(non_expired_and_valid)
 
         return notifications
 

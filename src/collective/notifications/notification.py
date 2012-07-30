@@ -9,6 +9,9 @@ from zope.keyreference.interfaces import IKeyReference
 from DateTime import DateTime
 
 
+def new_condition(self):
+    return True
+
 class INotification(IKeyReference):
     """
     """
@@ -29,7 +32,10 @@ class Notification(Persistent):
     intid = 0
     expires = None
 
-    def __init__(self, member, notification_type, message, params, section, expires=None):
+    def condition(self):
+        raise
+
+    def __init__(self, member, notification_type, message, params, section, expires=None, condition=None):
         self.member = member
         self.userid = member.getMemberId()
         self.notification_type = notification_type
@@ -40,6 +46,11 @@ class Notification(Persistent):
         intids = getUtility(IIntIds)
         self.intid = intids.register(self)
         self.expires = expires
+
+        if not condition:
+            self.condition = new_condition
+        else:
+            self.condition = condition
 
     def __call__(self):
         return self
@@ -60,3 +71,6 @@ class Notification(Persistent):
                 expired = True
 
         return expired
+
+    def is_valid(self):
+        return self.condition(self)

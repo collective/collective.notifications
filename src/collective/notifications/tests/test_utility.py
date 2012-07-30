@@ -23,6 +23,9 @@ from collective.notifications.testing import INTEGRATION_TESTING
 from DateTime import DateTime
 
 
+def condition(self):
+    return self.params['condition']
+
 class UtilityTest(unittest.TestCase):
 
     layer = INTEGRATION_TESTING
@@ -454,6 +457,59 @@ class UtilityTest(unittest.TestCase):
         notifications = self.utility.get_notifications_for_member(user6)
         self.assertEquals(len(notifications), 0)
 
+    def test_notifications_condition(self):
+        auth_member = self.pm.getAuthenticatedMember()
+        type = "type 1"
+        message = "Message"
+        params = {'condition': True}
+        section = "section 1"
+
+        member_id = auth_member.getUserId()
+
+        self.utility.notify_member(member_id,
+                                   type,
+                                   message,
+                                   params,
+                                   section,
+                                   condition=condition)
+
+        params = {'condition': False}
+
+        self.utility.notify_member(member_id,
+                                   type,
+                                   message,
+                                   params,
+                                   section,
+                                   condition=condition)
+
+        # We can see that both notifications exist
+        registry = getUtility(IRegistry)
+        notifications = registry.get(PROJECTNAME, None)
+
+        user_notifications = notifications.get(auth_member.getMemberId(), {})
+
+        self.assertNotEqual(user_notifications, {})
+
+        section_notifications = user_notifications.get(section, [])
+
+        self.assertNotEqual(section_notifications, [])
+
+        notification = section_notifications[0]
+
+        self.assertTrue(isinstance(notification, Notification))
+        self.assertEquals(notification.params, {'condition': False})
+
+        notification = section_notifications[1]
+
+        self.assertTrue(isinstance(notification, Notification))
+        self.assertEquals(notification.params, {'condition': True})
+
+        # But if we use our utility methods to get the notifications, then 
+        # the one with the False condition is filtered out
+        notifications = self.utility.get_notifications_for_member(auth_member)
+        self.assertEquals(len(notifications), 1)
+        self.assertTrue(isinstance(notifications[0], Notification))
+        self.assertEquals(notifications[0].params, {'condition': True})
 
 def test_suite():
     return unittest.defaultTestLoader.loadTestsFromName(__name__)
