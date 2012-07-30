@@ -163,45 +163,31 @@ class Notifications(object):
 
         member_notifications = notifications.get(userid, {})
 
-        if section:
-            notifications = member_notifications.get(section, [])
-        else:
-            notifications = []
-            for i in member_notifications.keys():
-                non_expired_and_valid = [i for i in member_notifications[i] 
-                                         if not i.is_expired() and i.is_valid()]
-                notifications.extend(non_expired_and_valid)
+        notifications = []
+        for i in member_notifications.keys():
+            if section and section != i:
+                continue
+            non_expired_and_valid = [i for i in member_notifications[i] 
+                                     if not i.is_expired() and i.is_valid()]
+            notifications.extend(non_expired_and_valid)
 
         return notifications
 
     def get_unread_count_for_member(self, member):
 
-        registry = getUtility(IRegistry)
-        notifications = registry.get(PROJECTNAME, None)
+        notifications = self.get_notifications_for_member(member)
 
-        if not notifications:
-            notifications = {}
-
-        userid = member.getMemberId()
-
-        member_notifications = notifications.get(userid, {})
-
-        unread_count = []
-        for section in member_notifications.keys():
-            number = 0
-            for notification in member_notifications[section]:
-                if notification.is_read():
-                    # New (unread) notifications are added in the beginning
-                    # of the list, so there's no point to keep looking for
-                    # notifications, once we found one that is already read.
-                    # So we just stop here
-                    break
-                if notification.is_expired():
-                    continue
-
-                number += 1
-
-            unread_count.append((section, number))
+        unread_count = {}
+        for notification in notifications:
+            number = unread_count.get(notification.section)
+            if not number:
+                number = unread_count[notification.section] = 0
+                
+            if notification.is_read():
+                continue
+            
+            number += 1 
+            unread_count[notification.section] = number
 
         return unread_count
 

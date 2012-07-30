@@ -201,8 +201,8 @@ class UtilityTest(unittest.TestCase):
 
         unread_count = self.utility.get_unread_count_for_member(auth_member)
 
-        self.assertEqual(unread_count[0], ("section 1", 4))
-        self.assertEqual(unread_count[1], ("section 2", 2))
+        self.assertEqual(unread_count, {"section 1": 4,
+                                        "section 2": 2})
 
         section = "section 3"
 
@@ -225,9 +225,9 @@ class UtilityTest(unittest.TestCase):
 
         unread_count = self.utility.get_unread_count_for_member(auth_member)
 
-        self.assertEqual(unread_count[0], ("section 1", 3))
-        self.assertEqual(unread_count[1], ("section 2", 0))
-        self.assertEqual(unread_count[2], ("section 3", 6))
+        self.assertEqual(unread_count, {"section 1": 3,
+                                        "section 2": 0,
+                                        "section 3": 6})
 
     def test_notifying_a_user_using_user_id(self):
         auth_member = self.pm.getAuthenticatedMember()
@@ -312,9 +312,15 @@ class UtilityTest(unittest.TestCase):
         self.assertTrue(isinstance(notifications[0], Notification))
         self.assertEquals(notifications[0].message, "Non expired")
 
+        # If we specify the section, then we get the same output
+        notifications = self.utility.get_notifications_for_member(auth_member, section="section 1")
+        self.assertEquals(len(notifications), 1)
+        self.assertTrue(isinstance(notifications[0], Notification))
+        self.assertEquals(notifications[0].message, "Non expired")
+
         count = self.utility.get_unread_count_for_member(auth_member)
         self.assertEquals(len(count), 1)
-        self.assertEquals(count, [('section 1', 1)])
+        self.assertEquals(count, {'section 1': 1})
 
     def test_notify_role(self):
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
@@ -510,6 +516,18 @@ class UtilityTest(unittest.TestCase):
         self.assertEquals(len(notifications), 1)
         self.assertTrue(isinstance(notifications[0], Notification))
         self.assertEquals(notifications[0].params, {'condition': True})
+
+        # If we specify the section, then we get the same output
+        notifications = self.utility.get_notifications_for_member(auth_member, section="section 1")
+        self.assertEquals(len(notifications), 1)
+        self.assertTrue(isinstance(notifications[0], Notification))
+        self.assertEquals(notifications[0].params, {'condition': True})
+
+        # Also check that it doesn't get counted as unread notification
+        unread_count = self.utility.get_unread_count_for_member(auth_member)
+
+        self.assertEqual(unread_count, {"section 1": 1})
+
 
 def test_suite():
     return unittest.defaultTestLoader.loadTestsFromName(__name__)
