@@ -5,6 +5,9 @@ import unittest2 as unittest
 from zope.component import getUtility
 from zope.intid.interfaces import IIntIds
 
+from plone.app.testing import TEST_USER_ID
+from plone.app.testing import setRoles
+
 from plone.registry.interfaces import IRegistry
 
 from Products.CMFCore.utils import getToolByName
@@ -309,6 +312,147 @@ class UtilityTest(unittest.TestCase):
         count = self.utility.get_unread_count_for_member(auth_member)
         self.assertEquals(len(count), 1)
         self.assertEquals(count, [('section 1', 1)])
+
+    def test_notify_role(self):
+        setRoles(self.portal, TEST_USER_ID, ['Manager'])
+
+        regtool = getToolByName(self.portal, 'portal_registration')
+        # Let's create some users that belong to specific roles
+        username = "user1"
+        email = "user1@none.com"
+        properties = {'username' : username,'fullname' : username.encode("utf-8"),'email' : email,}
+        user1 = regtool.addMember(username, username, ['Reviewer',], properties=properties)
+
+        username = "user2"
+        email = "user2@none.com"
+        properties = {'username' : username,'fullname' : username.encode("utf-8"),'email' : email,}
+        user2 = regtool.addMember(username, username, ['Reviewer',], properties=properties)
+
+        username = "user3"
+        email = "user3@none.com"
+        properties = {'username' : username,'fullname' : username.encode("utf-8"),'email' : email,}
+        user3 = regtool.addMember(username, username, ['Reviewer', 'Manager'], properties=properties)
+
+        username = "user4"
+        email = "user4@none.com"
+        properties = {'username' : username,'fullname' : username.encode("utf-8"),'email' : email,}
+        user4 = regtool.addMember(username, username, ['Manager',], properties=properties)
+
+        username = "user5"
+        email = "user5@none.com"
+        properties = {'username' : username,'fullname' : username.encode("utf-8"),'email' : email,}
+        user5 = regtool.addMember(username, username, ['Editor',], properties=properties)
+
+        username = "user6"
+        email = "user6@none.com"
+        properties = {'username' : username,'fullname' : username.encode("utf-8"),'email' : email,}
+        user6 = regtool.addMember(username, username, properties=properties)
+
+        # Now, let's send a notification for just the reviewers
+        type = "type 1"
+        message = "None"
+        params = {}
+        section = "section 1"
+
+        self.utility.notify_role('Reviewer',
+                                 type,
+                                 message,
+                                 params,
+                                 section)
+
+        # user1, user2, and user3 should have gotten the notification, but user4, user5 and user6 not.
+        notifications = self.utility.get_notifications_for_member(user1)
+        self.assertEquals(len(notifications), 1)
+        self.assertTrue(isinstance(notifications[0], Notification))
+
+        notifications = self.utility.get_notifications_for_member(user2)
+        self.assertEquals(len(notifications), 1)
+        self.assertTrue(isinstance(notifications[0], Notification))
+
+        notifications = self.utility.get_notifications_for_member(user3)
+        self.assertEquals(len(notifications), 1)
+        self.assertTrue(isinstance(notifications[0], Notification))
+        
+        notifications = self.utility.get_notifications_for_member(user4)
+        self.assertEquals(len(notifications), 0)
+        notifications = self.utility.get_notifications_for_member(user5)
+        self.assertEquals(len(notifications), 0)
+        notifications = self.utility.get_notifications_for_member(user6)
+        self.assertEquals(len(notifications), 0)
+
+        # Now, let's send a notification for just the Managers
+        type = "type 1"
+        message = "None"
+        params = {}
+        section = "section 1"
+
+        self.utility.notify_role('Manager',
+                                 type,
+                                 message,
+                                 params,
+                                 section)
+
+        # user1, user2, user5 and user6 should not have gotten the notification, and user3 and user4 should.
+        notifications = self.utility.get_notifications_for_member(user1)
+        self.assertEquals(len(notifications), 1)
+        self.assertTrue(isinstance(notifications[0], Notification))
+
+        notifications = self.utility.get_notifications_for_member(user2)
+        self.assertEquals(len(notifications), 1)
+        self.assertTrue(isinstance(notifications[0], Notification))
+
+        notifications = self.utility.get_notifications_for_member(user3)
+        self.assertEquals(len(notifications), 2)
+        self.assertTrue(isinstance(notifications[0], Notification))
+        self.assertTrue(isinstance(notifications[1], Notification))
+
+        notifications = self.utility.get_notifications_for_member(user4)
+        self.assertEquals(len(notifications), 1)
+        self.assertTrue(isinstance(notifications[0], Notification))
+
+        notifications = self.utility.get_notifications_for_member(user5)
+        self.assertEquals(len(notifications), 0)
+        notifications = self.utility.get_notifications_for_member(user6)
+        self.assertEquals(len(notifications), 0)
+
+        # Now, let's send a notification for both roles
+        type = "type 1"
+        message = "None"
+        params = {}
+        section = "section 1"
+
+        self.utility.notify_role(['Reviewer', 'Manager'],
+                                 type,
+                                 message,
+                                 params,
+                                 section)
+
+        # All of them should have gotten the notifications, but user5 and user6.
+        notifications = self.utility.get_notifications_for_member(user1)
+        self.assertEquals(len(notifications), 2)
+        self.assertTrue(isinstance(notifications[0], Notification))
+        self.assertTrue(isinstance(notifications[1], Notification))
+
+        notifications = self.utility.get_notifications_for_member(user2)
+        self.assertEquals(len(notifications), 2)
+        self.assertTrue(isinstance(notifications[0], Notification))
+        self.assertTrue(isinstance(notifications[1], Notification))
+
+        notifications = self.utility.get_notifications_for_member(user3)
+        self.assertEquals(len(notifications), 3)
+        self.assertTrue(isinstance(notifications[0], Notification))
+        self.assertTrue(isinstance(notifications[1], Notification))
+        self.assertTrue(isinstance(notifications[2], Notification))
+
+        notifications = self.utility.get_notifications_for_member(user4)
+        self.assertEquals(len(notifications), 2)
+        self.assertTrue(isinstance(notifications[0], Notification))
+        self.assertTrue(isinstance(notifications[1], Notification))
+        
+        notifications = self.utility.get_notifications_for_member(user5)
+        self.assertEquals(len(notifications), 0)
+        notifications = self.utility.get_notifications_for_member(user6)
+        self.assertEquals(len(notifications), 0)
 
 
 def test_suite():

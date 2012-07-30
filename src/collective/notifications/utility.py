@@ -33,6 +33,12 @@ class INotifications(Interface):
         the 'notify_member' method
         """
 
+    def notify_role(roles, type, message, params, section=None, expires=None):
+        """
+        This method will send a notification for all members that belong to the
+        specified roles.
+        """
+
     def get_notifications_for_member(member, section=None):
         """
         This method will search the registry and it will return a notification
@@ -123,6 +129,21 @@ class Notifications(object):
 
         pm = getToolByName(portal, 'portal_membership')
         members = pm.listMembers()
+
+        for member in members:
+            self.notify_member(member, type, message, params, section, expires)
+
+    def notify_role(self, roles, type, message, params, section=None, expires=None):
+        portal = getSite()
+        pm = getToolByName(portal, 'portal_membership')
+
+        if isinstance(roles, basestring):
+            roles = [roles]
+
+        members = []
+        for role in roles:
+            members += [member for member in pm.listMembers() 
+                        if member.has_role(role) and member not in members]
 
         for member in members:
             self.notify_member(member, type, message, params, section, expires)
