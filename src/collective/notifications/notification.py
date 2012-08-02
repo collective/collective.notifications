@@ -7,6 +7,8 @@ from zope.intid.interfaces import IIntIds
 from zope.keyreference.interfaces import IKeyReference
 
 from DateTime import DateTime
+from datetime import datetime
+from datetime import date
 
 
 def new_condition(self):
@@ -45,7 +47,13 @@ class Notification(Persistent):
         self.read = False
         intids = getUtility(IIntIds)
         self.intid = intids.register(self)
-        self.expires = expires
+
+        if isinstance(expires, date):
+            self.expires = DateTime(expires.strftime("%Y-%m-%d"))
+        elif isinstance(expires, datetime):  
+            self.expires = DateTime(expires.strftime("%Y-%m-%d %H:%M:%S"))
+        else:
+            self.expires = expires
 
         if not condition:
             self.condition = new_condition
