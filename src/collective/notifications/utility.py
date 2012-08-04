@@ -159,7 +159,11 @@ class Notifications(object):
         if not notifications:
             notifications = {}
 
-        userid = member.getMemberId()
+        try:
+            userid = member.getMemberId()
+        except AttributeError:
+            # This might happen when asking for anonymous
+            return []
 
         member_notifications = notifications.get(userid, {})
 
