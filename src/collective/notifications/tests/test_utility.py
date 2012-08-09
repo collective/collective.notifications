@@ -547,7 +547,7 @@ class UtilityTest(unittest.TestCase):
         notifications = self.utility.get_notifications_for_member(auth_member)
         self.assertEqual(len(notifications), 20)
 
-        for i in range(0, 20):
+        for i in range(20, 0):
             self.assertEquals(notifications[i].message, "%s %s" %(message, i))
 
 
