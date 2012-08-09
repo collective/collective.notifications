@@ -72,6 +72,9 @@ class NotificationsView(BrowserView):
                                name=notification_type)
 
         if view:
-            return view.render()
+            try:
+                return view.render()
+            except:
+                return False
 
 
