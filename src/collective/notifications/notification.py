@@ -33,6 +33,7 @@ class Notification(Persistent):
     read = False
     intid = 0
     expires = None
+    date = None
 
     def condition(self):
         raise
@@ -59,6 +60,8 @@ class Notification(Persistent):
             self.condition = new_condition
         else:
             self.condition = condition
+
+        self.date = datetime.now()
 
     def __call__(self):
         return self

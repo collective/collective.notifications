@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from random import choice
 import unittest2 as unittest
 
 from zope.component import getUtility
@@ -527,6 +528,27 @@ class UtilityTest(unittest.TestCase):
         unread_count = self.utility.get_unread_count_for_member(auth_member)
 
         self.assertEqual(unread_count, {"section 1": 1})
+
+    def test_notifications_returned_in_order(self):
+        auth_member = self.pm.getAuthenticatedMember()
+        type = "type 1"
+        message = "This is the message"
+        params = {}
+        sections = ["section 1", "section 2", "section 3"]
+
+        for i in range(0, 20):
+            section = choice(sections)
+            self.utility.notify_member(auth_member,
+                                       type,
+                                       "%s %s" %(message, i),
+                                       params,
+                                       section)
+
+        notifications = self.utility.get_notifications_for_member(auth_member)
+        self.assertEqual(len(notifications), 20)
+
+        for i in range(0, 20):
+            self.assertEquals(notifications[i].message, "%s %s" %(message, i))
 
 
 def test_suite():

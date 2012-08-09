@@ -175,6 +175,7 @@ class Notifications(object):
                                      if not i.is_expired() and i.is_valid()]
             notifications.extend(non_expired_and_valid)
 
+        notifications.sort(key=lambda x:x.date)
         return notifications
 
     def get_unread_count_for_member(self, member):
