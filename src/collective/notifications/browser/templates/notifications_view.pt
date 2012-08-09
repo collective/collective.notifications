@@ -9,7 +9,7 @@
 <body>
     <metal:main fill-slot="main">
         <metal:main_macro define-macro="main">
-        <h1 i18n:translate="">Your notifications</h1>
+        <h1 i18n:translate="" class="documentFirstHeading">Your notifications</h1>
 
         <tal:notifications tal:repeat="notification view/notifications">
             <tal:read tal:define="read notification/is_read">
