@@ -33,7 +33,7 @@ class Notification(Persistent):
     read = False
     intid = 0
     expires = None
-    date = None
+    date = datetime(2011, 1, 1)
 
     def condition(self):
         raise
