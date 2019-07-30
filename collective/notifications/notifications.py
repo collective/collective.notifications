@@ -122,8 +122,9 @@ class Notification(Persistent):
                  url=None,
                  first_read=False,
                  external=None,
+                 email_subject=None,
                  email_body=None,
-                 email_subject=None):
+                 email_content_type=None):
         uid = getUtility(IUUIDGenerator)()
         context_uid = getattr(context, 'UID', False) and context.UID() or context.id
         self.uid = uid
@@ -133,8 +134,9 @@ class Notification(Persistent):
         self.recipients = self.get_recipients(recipients)
         self.first_read = first_read
         self.external = external
+        self.email_subject=email_subject
         self.email_body = email_body
-        self.email_subject = email_subject
+        self.email_content_type = email_content_type
         if user is None:
             user = api.user.get_current()
             if user is not None:
@@ -149,7 +151,7 @@ class Notification(Persistent):
     def get_recipients(self, recipients):
         recipient_list = []
         seen = dict()
-        if not isinstance(recipients, list):
+        if not isinstance(recipients, (list, tuple)):
             recipients = [recipients]
         for recipient in recipients:
             if recipient.startswith('group:'):
@@ -179,7 +181,7 @@ class Notification(Persistent):
     def notify_external(self):
         external = self.external
         if external is not None:
-            if not isinstance(external, list):
+            if not isinstance(external, (list, tuple)):
                 external = [external]
             services = getUtilitiesFor(IExternalNotificationService)
             for name, service in services:
@@ -195,8 +197,9 @@ def handle_notification_requested(event):
                                 event.url,
                                 event.first_read,
                                 event.external,
+                                email_subject=event.email_subject,
                                 email_body=event.email_body,
-                                email_subject=event.email_subject)
+                                email_content_type=event.email_content_type)
     site = getSite()
     storage = INotificationStorage(site)
     storage.add_notification(notification)
