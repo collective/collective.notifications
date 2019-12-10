@@ -1,5 +1,5 @@
-0.6
----
+1.0 (Unreleased)
+================
 
 - Remove support for plone.app.async.
 
@@ -11,7 +11,7 @@
 
 
 0.5
----
+===
 
 - Add tests.
 

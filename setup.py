@@ -2,7 +2,7 @@
 from setuptools import find_packages
 from setuptools import setup
 
-version = '0.6'
+version = '1.0'
 
 setup(
     name='collective.notifications',
