@@ -1,4 +1,4 @@
-1.0 (Unreleased)
+1.0 (2019-12-10)
 ================
 
 - Remove support for plone.app.async.
