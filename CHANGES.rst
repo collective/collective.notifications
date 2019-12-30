@@ -1,4 +1,4 @@
-1.1 (unreleased)
+1.1 (2019-12-30)
 ================
 
 - Encode message body appropriately
