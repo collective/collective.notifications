@@ -25,7 +25,7 @@ class EmailNotifier(object):
         email_body = getattr(base_notification, 'email_body')
         if not email_body:
             email_body = notification.note
-        msg = email.message_from_string(email_body)
+        msg = email.message_from_bytes(email_body.encode('utf-8'))
 
         content_type = getattr(base_notification, 'email_content_type')
         if content_type is not None:
@@ -43,16 +43,16 @@ class EmailNotifier(object):
         for recipient in notification.recipients:
             user = api.user.get(userid=recipient)
             if not user:
-                msg = ('Was not able to find user for userid %s. Unable '
-                       'to send notification email' % recipient)
-                logger.warn(msg)
+                log_msg = ('Was not able to find user for userid %s. Unable '
+                           'to send notification email' % recipient)
+                logger.warn(log_msg)
                 continue
 
             address = user.getProperty('email', '')
             if not address:
-                msg = ('The %s user has no email address. Unable to send '
-                       'an email to them.')
-                logger.warn(msg % recipient)
+                log_msg = ('The %s user has no email address. Unable to send '
+                           'an email to them.')
+                logger.warn(log_msg % recipient)
                 continue
             mailhost.send(msg,
                           subject=subject,

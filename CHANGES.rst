@@ -1,7 +1,7 @@
 1.1 (unreleased)
 ================
 
-- Nothing changed yet.
+- Encode message body appropriately
 
 
 1.0 (2019-12-10)
