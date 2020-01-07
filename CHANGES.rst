@@ -1,4 +1,4 @@
-1.2 (unreleased)
+1.2 (2020-01-07)
 ================
 
 - Do not crash @@site-notifications control panel if notification doesn't have a user
