@@ -1,7 +1,7 @@
 1.2 (unreleased)
 ================
 
-- Nothing changed yet.
+- Do not crash @@site-notifications control panel if notification doesn't have a user
 
 
 1.1 (2019-12-30)

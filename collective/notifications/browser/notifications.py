@@ -25,12 +25,14 @@ from ..interfaces import NotificationRequestedEvent
 
 
 def _user_display_name(username):
-    obj = user.get(userid=username)
-    if obj is None:
-        return username
-    display = obj.getProperty('fullname')
-    if not display:
-        display = username
+    display = u""
+    if username:
+        obj = user.get(userid=username)
+        if obj is None:
+            return username
+        display = obj.getProperty('fullname')
+        if not display:
+            display = username
     return display
 
 
