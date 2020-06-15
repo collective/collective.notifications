@@ -1,4 +1,7 @@
-import urllib.parse
+try:
+    from urllib.parse import quote
+except ImportError:
+    from urllib import quote
 
 from Products.Five.browser import BrowserView
 from z3c.form import button
@@ -61,7 +64,7 @@ class NotificationsView(BrowserView):
         url = "{}/@@notification-read?uid={}&url={}"
         url = url.format(site.absolute_url(),
                          notification.uid,
-                         urllib.parse.quote(self.adjust_url(notification.url)))
+                         quote(self.adjust_url(notification.url)))
         url = addTokenToUrl(url)
         return url
 

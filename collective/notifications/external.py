@@ -1,5 +1,4 @@
 import email
-import email.policy
 from Acquisition import aq_base
 from plone import api
 from zope.interface import implementer

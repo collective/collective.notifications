@@ -1,7 +1,7 @@
 1.3 (unreleased)
 ================
 
-- Nothing changed yet.
+- Restore python 2.7 support.
 
 
 1.2 (2020-01-07)
