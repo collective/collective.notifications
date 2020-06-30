@@ -24,7 +24,10 @@ class EmailNotifier(object):
         email_body = getattr(base_notification, 'email_body')
         if not email_body:
             email_body = notification.note
-        msg = email.message_from_bytes(email_body.encode('utf-8'))
+        if hasattr(email, 'message_from_bytes'):
+            msg = email.message_from_bytes(email_body.encode('utf-8'))
+        else:
+            msg = email.message_from_string(email_body)
 
         content_type = getattr(base_notification, 'email_content_type')
         if content_type is not None:
