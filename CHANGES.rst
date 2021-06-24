@@ -1,4 +1,4 @@
-1.3 (unreleased)
+1.3 (2021-06-24)
 ================
 
 - Restore python 2.7 support.
