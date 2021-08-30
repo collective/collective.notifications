@@ -203,5 +203,4 @@ def handle_notification_requested(event):
     site = getSite()
     storage = INotificationStorage(site)
     storage.add_notification(notification)
-    notification.notify()
     queueJob(notification.uid)

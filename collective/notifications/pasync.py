@@ -17,6 +17,7 @@ def runJob(notification_uid):
     site = getSite()
     storage = INotificationStorage(site)
     notification = storage.get_notification(notification_uid)
+    notification.notify()
     notification.notify_external()
 
 

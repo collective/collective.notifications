@@ -1,7 +1,7 @@
 1.4 (unreleased)
 ================
 
-- Nothing changed yet.
+- Call `.notify()` inside the async task if there.
 
 
 1.3 (2021-06-24)
