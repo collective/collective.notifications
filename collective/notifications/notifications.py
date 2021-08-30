@@ -14,13 +14,13 @@ from plone import api
 from plone.app.layout.navigation.interfaces import INavigationRoot
 from plone.uuid.interfaces import IUUIDGenerator
 
+from .config import NOTIFICATION_KEY
+from .config import MAIN
 from .pasync import queueJob
+from .pasync import queueClearReadUnreadNotificationsForUser
+from .pasync import queueRemoveNotifications
 from .interfaces import INotificationStorage
 from .interfaces import IExternalNotificationService
-
-
-NOTIFICATION_KEY = 'collective.notifications'
-MAIN = '__notifications__'
 
 
 @implementer(INotificationStorage)
@@ -63,53 +63,20 @@ class NotificationStorage(object):
         self.annotations[NOTIFICATION_KEY][userid].append((uid, False))
 
     def clear_notifications_for_users(self, users, uids):
-        if not isinstance(users, list):
-            users = [users]
-        if not isinstance(uids, list):
-            uids = [uids]
-        for user in users:
-            notifications = self.get_notifications_for_user(user)
-            for notification, read in notifications[:]:
-                if notification in uids:
-                    notifications.remove((notification, read))
+        queueClearReadUnreadNotificationsForUser(users, uids, "clear")
 
     def get_notification(self, uid):
         notification = self.annotations[NOTIFICATION_KEY][MAIN].get(uid)
         return notification
 
     def mark_read_for_users(self, users, uids):
-        if not isinstance(users, list):
-            users = [users]
-        if not isinstance(uids, list):
-            uids = [uids]
-        for user in users:
-            notifications = self.get_notifications_for_user(user)
-            for index, notification in enumerate(notifications):
-                notification_uid, read = notification
-                if notification_uid in uids:
-                    notifications[index] = (notification_uid, True)
+        queueClearReadUnreadNotificationsForUser(users, uids, "read")
 
     def mark_unread_for_users(self, users, uids):
-        if not isinstance(users, list):
-            users = [users]
-        if not isinstance(uids, list):
-            uids = [uids]
-        for user in users:
-            notifications = self.get_notifications_for_user(user)
-            for index, notification in enumerate(notifications):
-                notification_uid, read = notification
-                if notification_uid in uids:
-                    notifications[index] = (notification_uid, False)
+        queueClearReadUnreadNotificationsForUser(users, uids, "unread")
 
     def remove_notifications(self, uids):
-        if not isinstance(uids, list):
-            uids = [uids]
-        for uid in uids:
-            notification = self.get_notification(uid)
-            if notification:
-                for user in notification.recipients:
-                    self.clear_notifications_for_users(user, uid)
-                del self.annotations[NOTIFICATION_KEY][MAIN][uid]
+        queueRemoveNotifications(uids)
 
 
 class Notification(Persistent):

@@ -1,6 +1,8 @@
 1.4 (unreleased)
 ================
 
+- Try to perform all tasks async
+
 - Call `.notify()` inside the async task if there.
 
 
