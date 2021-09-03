@@ -5,7 +5,7 @@ from collective.celery import task
 logger = get_task_logger(__name__)
 
 
-@task(name="notify")
+@task(name="collective.notifications.notify")
 def queue_job(notification_uid):
     from collective.notifications.pasync import runJob
     logger.warn('Sending notification')

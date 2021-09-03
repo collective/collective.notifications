@@ -3,6 +3,8 @@
 
 - Call `.notify()` inside the async task if there.
 
+- Add package name to task name.
+
 
 1.3 (2021-06-24)
 ================
