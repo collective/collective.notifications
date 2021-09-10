@@ -1,4 +1,4 @@
-1.4 (unreleased)
+1.4 (2021-09-10)
 ================
 
 - Call `.notify()` inside the async task if there.
