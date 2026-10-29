@@ -17,12 +17,12 @@ setup(
     # http://pypi.python.org/pypi?:action=list_classifiers
     classifiers=[
         "Framework :: Plone",
-        "Framework :: Plone :: 5.0",
-        "Framework :: Plone :: 5.1",
-        "Framework :: Plone :: 5.2",
+        "Framework :: Plone :: 6.1",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 2.7",
-        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
         "Operating System :: OS Independent",
         "License :: OSI Approved :: GNU General Public License (GPL)",
         "Development Status :: 5 - Production/Stable",
@@ -41,8 +41,8 @@ setup(
         'z3c.jbot',
     ],
     extras_require={
-        'celery': [
-            'collective.celery',
+        'procrastinate': [
+            'collective.procrastinate',
         ]
     },
     entry_points="""
@@ -51,7 +51,7 @@ setup(
       [z3c.autoinclude.plugin]
       target = plone
 
-      [celery_tasks]
+      [procrastinate_tasks]
       notify = collective.notifications.tasks
       """
 )

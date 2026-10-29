@@ -1,7 +1,10 @@
 1.5 (unreleased)
 ================
 
-- Nothing changed yet.
+- Send notifications with collective.procrastinate instead of collective.celery
+  (``procrastinate`` extra, ``[procrastinate_tasks]`` entry point).
+  The test layer runs the task inline when collective.procrastinate is
+  installed.
 
 
 1.4 (2021-09-10)

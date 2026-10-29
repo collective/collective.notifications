@@ -15,11 +15,18 @@ except ImportError:
     from plone.app.testing import PLONE_FIXTURE
     BASE_FIXTURE = PLONE_FIXTURE
 
+try:
+    # Run queued notifications inline (eager) and empty the queue per test.
+    from collective.procrastinate.testing import ProcrastinateLayer as BaseLayer
+except ImportError:
+    BaseLayer = PloneSandboxLayer
 
-class Notifications(PloneSandboxLayer):
+
+class Notifications(BaseLayer):
     defaultBases = (BASE_FIXTURE,)
 
     def setUpZope(self, app, configurationContext):
+        super(Notifications, self).setUpZope(app, configurationContext)
         # load ZCML
         import collective.notifications
         import z3c.jbot

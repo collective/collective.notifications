@@ -1,5 +1,5 @@
-from celery.utils.log import get_task_logger
-from collective.celery import task
+from collective.procrastinate import task
+from collective.procrastinate.log import get_task_logger
 
 
 logger = get_task_logger(__name__)

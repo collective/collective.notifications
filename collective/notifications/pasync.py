@@ -5,7 +5,7 @@ from .interfaces import INotificationStorage
 
 try:
     from collective.notifications.tasks import queue_job
-    from celery.utils.log import get_task_logger
+    from collective.procrastinate.log import get_task_logger
     logger = get_task_logger(__name__)
 except ImportError:
     queue_job = None

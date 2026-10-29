@@ -103,21 +103,16 @@ This requires configuring the service as un utility in configure.zcml:
     />
 
 
-Async and Celery
-================
+Background jobs
+===============
 
-Notifications attempts to use plone.app.async to perform the notifications,
-but if that fails it will finish the task directly.
-The advantage of this is to allow an individual 'worker' client
-to run Async and handle all of these request.
-If there is a lot of activity it will not get backed up.
-Async queues the job up and handles it as it can
-while the users request finishes and moves on
-avoiding sacrifices in performance.
-Refer to the collective.async pypi page
-for instructions on setting it up if you use it.
-Async is NOT required for Notifications to work,
-however it is advised, especially for high traffic sites.
+When collective.procrastinate is installed (the ``procrastinate`` extra),
+notifications are sent by a background job (task
+``collective.notifications.notify``, registered under the
+``[procrastinate_tasks]`` entry point) queued when the request's transaction
+commits, so the request does not wait for e-mail or other external services.
+Without it the notification is sent during the request. See
+collective.procrastinate's README for running the workers.
 
 
 Note

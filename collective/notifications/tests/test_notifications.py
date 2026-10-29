@@ -1,4 +1,5 @@
 from plone.app.testing import SITE_OWNER_NAME
+from plone.uuid.interfaces import IUUID
 
 from .base import BaseTestCase
 from ..notifications import Notification
@@ -15,8 +16,9 @@ class TestNotifications(BaseTestCase):
                                     "this is a notification",
                                     ['user1', 'user2'])
 
+        # Plone 6 sites have a UID, which is stored in preference to the id
         self.assertEqual(
-            self.portal.id,
+            IUUID(self.portal),
             notification.context,
             'Unexpected context value for notification'
         )

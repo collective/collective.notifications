@@ -5,7 +5,7 @@ from zope.interface import implementer
 
 from .interfaces import IExternalNotificationService
 try:
-    from celery.utils.log import get_task_logger
+    from collective.procrastinate.log import get_task_logger
     logger = get_task_logger(__name__)
 except ImportError:
     import logging
